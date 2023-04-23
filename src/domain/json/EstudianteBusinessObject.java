@@ -30,6 +30,25 @@ public class EstudianteBusinessObject extends Estudiante {
         return notas;
     }
 
+    public String getNombreCompleto(){
+        return String.format("%s %s %s",this.nombre,this.primerApellido,this.segundoApellido);
+    }
+
+    public String enhancedToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getNombreCompleto()).append(":\n");
+        stringBuilder.append("Cursos Matriculados: \n");
+        cursos.forEach(curso -> {
+            stringBuilder.append(curso.getDescripcion()).append(":\n");
+            stringBuilder.append("Contenidos:\n");
+            curso.getContenidos().forEach(contenido -> {
+                stringBuilder.append(contenido.getTema()).append(":\n");
+                contenido.getSubcontenido().forEach(subcontenido -> stringBuilder.append("\t").append(subcontenido.getDescripcion()));
+            });
+        });
+        return stringBuilder.toString();
+    }
+
     @Override
     public String toString() {
         return "EstudianteJson{" +

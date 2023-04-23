@@ -35,7 +35,7 @@ public class UniService {
         return construirEstudiante(estudianteRepository.buscar(estudianteId));
     }
 
-    public List<Curso> getCursosArmados() throws Exception {
+    public List<Curso> getCursos() throws Exception {
         List<Curso> cursos = cursoRepository.listar();
         for (Curso curso:cursos) {
             curso.setContenidos(getContenidos(curso.getIdCurso()));
@@ -81,5 +81,35 @@ public class UniService {
 
     public Long salvarCurso(Curso curso) throws Exception {
         return cursoRepository.upsert(curso);
+    }
+    public Curso getCurso(Long cursoId) throws Exception {
+        return cursoRepository.buscar(cursoId);
+    }
+
+    public void eliminarCurso(Long cursoId) throws Exception {
+        cursoRepository.eliminar(cursoId);
+    }
+
+    public Long salvarContenido(Contenido contenido) throws Exception {
+        return contenidoRepository.upsert(contenido);
+    }
+
+    public void eliminarContenido(Long contenidoId) throws Exception {
+        contenidoRepository.eliminar(contenidoId);
+    }
+
+    public Long salvarSubcontenido(Subcontenido subcontenido) throws Exception {
+        return subcontenidoRepository.upsert(subcontenido);
+    }
+    public void eliminarSubContenido(Long subcontenidoId) throws Exception {
+        subcontenidoRepository.eliminar(subcontenidoId);
+    }
+
+    public Long actualizarCursoDeEstudiante(EstudianteCurso estudianteCurso) throws Exception {
+        return estudianteCursoRepository.upsert(estudianteCurso);
+    }
+
+    public EstudianteCurso obtenerCursoDeEstudiante(Long estudianteCursoId) throws Exception {
+        return estudianteCursoRepository.buscar(estudianteCursoId);
     }
 }

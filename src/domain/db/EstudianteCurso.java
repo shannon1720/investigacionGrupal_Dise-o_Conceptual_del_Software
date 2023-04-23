@@ -15,10 +15,9 @@ public class EstudianteCurso {
         this.nota = nota;
     }
 
-    public EstudianteCurso(Long idEstudiante, Long idCurso, BigDecimal nota) {
+    public EstudianteCurso(Long idEstudiante, Long idCurso) {
         this.idEstudiante = idEstudiante;
         this.idCurso = idCurso;
-        this.nota = nota;
     }
 
     public Long getIdEstudianteCurso() {

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class EstudianteCursoRepository extends ConexionDB{
+    private String returnColumns[] = new String[] { "idEstudianteCurso" };
     public EstudianteCursoRepository(){}
 
     public Collection<EstudianteCurso> listar() throws Exception
@@ -45,15 +46,17 @@ public class EstudianteCursoRepository extends ConexionDB{
         }
         return coleccion;
     }
-    public void upsert(EstudianteCurso estudianteCurso) throws Exception
+    public Long upsert(EstudianteCurso estudianteCurso) throws Exception
     {
         conectar();
-        CallableStatement pstmt = null;
+        PreparedStatement pstmt = null;
         try
         {
-            pstmt = conexion.prepareCall(queryFactory(estudianteCurso));
+            pstmt = conexion.prepareStatement(queryFactory(estudianteCurso),returnColumns);
             System.out.println("Salvando EstudianteCurso.");
             pstmt.execute();
+            pstmt.getGeneratedKeys().next();
+            return pstmt.getGeneratedKeys().getLong(1);
         }
         catch (Exception e)
         {
@@ -119,6 +122,40 @@ public class EstudianteCursoRepository extends ConexionDB{
             desconectar();
         }
         return cursosPorEstudiante;
+    }
+
+    public EstudianteCurso buscar(Long estudianteCursoId) throws Exception
+    {
+        conectar();
+        ResultSet rs = null;
+        EstudianteCurso matricula = null;
+        CallableStatement pstmt = conexion.prepareCall(String.format("select * from estudiante_curso where idEstudianteCurso = %s",estudianteCursoId));
+        try
+        {
+            pstmt.execute();
+            rs = pstmt.getResultSet();
+            while (rs.next())
+            {
+                matricula = new EstudianteCurso(
+                        rs.getLong("idEstudianteCurso"),
+                        rs.getLong("idEstudiante"),
+                        rs.getLong("idCurso"),
+                        rs.getBigDecimal("nota")
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw e;
+        }
+        finally
+        {
+            if(rs != null) rs.close();
+            if(pstmt != null) pstmt.close();
+            desconectar();
+        }
+        return matricula;
     }
 
     private String queryFactory(EstudianteCurso estudianteCurso) {

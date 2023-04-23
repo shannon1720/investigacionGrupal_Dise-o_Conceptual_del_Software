@@ -135,7 +135,7 @@ public class CursoRepository extends ConexionDB {
     private String queryFactory(Curso curso) {
         return curso.getIdCurso() != null ?
                 String.format("update curso set descripcion = '%s', objetivo = '%s', fechaApertura = '%s', cuatrimestre = %s, modalidad = '%s', costoCurso = %s, moneda = '%s' where idCurso = %s",
-                        curso.getDescripcion(),curso.getObjetivo(),curso.getFechaApertura(),curso.getCuatrimestre(),curso.getModalidad(),curso.getCostoCurso(),curso.getMoneda(),curso.getIdCurso())
+                        curso.getDescripcion(),curso.getObjetivo(),String.format("%s-%s-%s",curso.getFechaApertura().getYear(),curso.getFechaApertura().getMonthValue(),curso.getFechaApertura().getDayOfMonth()),curso.getCuatrimestre(),curso.getModalidad(),curso.getCostoCurso(),curso.getMoneda(),curso.getIdCurso())
                 : String.format("insert into curso(descripcion,objetivo,fechaApertura,cuatrimestre,modalidad,costoCurso,moneda) values('%s','%s',DATE '%s',%s,'%s',%s,'%s')",
                 curso.getDescripcion(),curso.getObjetivo(),String.format("%s-%s-%s",curso.getFechaApertura().getYear(),curso.getFechaApertura().getMonthValue(),curso.getFechaApertura().getDayOfMonth()),curso.getCuatrimestre(),curso.getModalidad(),curso.getCostoCurso(),curso.getMoneda());
     }

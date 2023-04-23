@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class SubcontenidoRepository extends ConexionDB{
+    private String returnColumns[] = new String[] { "idSubcontenido" };
     public SubcontenidoRepository(){}
 
     public Collection<Subcontenido> listar() throws Exception
@@ -77,15 +78,17 @@ public class SubcontenidoRepository extends ConexionDB{
         }
         return coleccion;
     }
-    public void upsert(Subcontenido subcontenido) throws Exception
+    public Long upsert(Subcontenido subcontenido) throws Exception
     {
         conectar();
-        CallableStatement pstmt = null;
+        PreparedStatement pstmt = null;
         try
         {
-            pstmt = conexion.prepareCall(queryFactory(subcontenido));
+            pstmt = conexion.prepareStatement(queryFactory(subcontenido),returnColumns);
             System.out.println("Salvando Subcontenido.");
             pstmt.execute();
+            pstmt.getGeneratedKeys().next();
+            return pstmt.getGeneratedKeys().getLong(1);
         }
         catch (Exception e)
         {
