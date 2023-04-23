@@ -1,14 +1,13 @@
 package persitence;
 
-import domain.Estudiante;
+import domain.db.Estudiante;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class EstudianteRepository extends ConexionDB {
+    private String returnColumns[] = new String[] { "idEstudiante" };
     public EstudianteRepository(){}
 
     public Collection<Estudiante> listar() throws Exception
@@ -50,15 +49,17 @@ public class EstudianteRepository extends ConexionDB {
         }
         return coleccion;
     }
-    public void upsert(Estudiante estudiante) throws Exception
+    public Long upsert(Estudiante estudiante) throws Exception
     {
         conectar();
-        CallableStatement pstmt = null;
+        PreparedStatement pstmt = null;
         try
         {
-            pstmt = conexion.prepareCall(queryFactory(estudiante));
+            pstmt = conexion.prepareStatement(queryFactory(estudiante), returnColumns);
             System.out.println("Salvando Estudiante.");
             pstmt.execute();
+            pstmt.getGeneratedKeys().next();
+            return pstmt.getGeneratedKeys().getLong(1);
         }
         catch (Exception e)
         {
