@@ -1,7 +1,7 @@
 package service;
 
 import domain.db.*;
-import domain.json.EstudianteJson;
+import domain.json.EstudianteBusinessObject;
 import persitence.*;
 
 import java.util.ArrayList;
@@ -22,13 +22,17 @@ public class UniService {
         estudianteCursoRepository = new EstudianteCursoRepository();
     }
 
-    public List<EstudianteJson> getEstudiantesArmados() throws Exception {
-        List<EstudianteJson> estudianteJsonList = new ArrayList<>();
+    public List<EstudianteBusinessObject> getEstudiantes() throws Exception {
+        List<EstudianteBusinessObject> estudianteBusinessObjectList = new ArrayList<>();
         Collection<Estudiante> estudiantes = estudianteRepository.listar();
         for (Estudiante estudiante: estudiantes) {
-            estudianteJsonList.add(construirEstudiante(estudiante));
+            estudianteBusinessObjectList.add(construirEstudiante(estudiante));
         }
-        return estudianteJsonList;
+        return estudianteBusinessObjectList;
+    }
+
+    public EstudianteBusinessObject getEstudiante(Long estudianteId) throws Exception {
+        return construirEstudiante(estudianteRepository.buscar(estudianteId));
     }
 
     public List<Curso> getCursosArmados() throws Exception {
@@ -39,15 +43,15 @@ public class UniService {
         return cursos;
     }
 
-    private EstudianteJson construirEstudiante(Estudiante estudiante) throws Exception {
-        EstudianteJson estudianteJson = convertToEstudianteJson(estudiante);
+    private EstudianteBusinessObject construirEstudiante(Estudiante estudiante) throws Exception {
+        EstudianteBusinessObject estudianteBusinessObject = convertToEstudianteJson(estudiante);
         List<EstudianteCurso> cursosPorEstudiante = estudianteCursoRepository.buscarByIdEstudiante(estudiante.getEstudianteId());
         for (EstudianteCurso relacion: cursosPorEstudiante) {
             Curso curso = construirCurso(relacion.getIdCurso());
-            estudianteJson.getCursos().add(curso);
-            estudianteJson.getNotas().put(curso.getDescripcion(),relacion.getNota());
+            estudianteBusinessObject.getCursos().add(curso);
+            estudianteBusinessObject.getNotas().put(curso.getDescripcion(),relacion.getNota());
         }
-        return estudianteJson;
+        return estudianteBusinessObject;
     }
     private Curso construirCurso(Long idCurso) throws Exception {
         Curso curso = cursoRepository.buscar(idCurso);
@@ -63,27 +67,19 @@ public class UniService {
         return contenidosPorCurso;
     }
 
-    private EstudianteJson convertToEstudianteJson(Estudiante estudiante){
-        return new EstudianteJson(estudiante.getEstudianteId(),estudiante.getNombre(),estudiante.getPrimerApellido(),estudiante.getSegundoApellido(),estudiante.getGenero(),estudiante.getDireccion(),estudiante.getCorreoElectronico(),estudiante.getTelefonoCasa(),estudiante.getTelefonoCelular(),estudiante.getEdad());
+    private EstudianteBusinessObject convertToEstudianteJson(Estudiante estudiante){
+        return new EstudianteBusinessObject(estudiante.getEstudianteId(),estudiante.getNombre(),estudiante.getPrimerApellido(),estudiante.getSegundoApellido(),estudiante.getGenero(),estudiante.getDireccion(),estudiante.getCorreoElectronico(),estudiante.getTelefonoCasa(),estudiante.getTelefonoCelular(),estudiante.getEdad());
     }
 
-    public EstudianteRepository getEstudianteRepository() {
-        return estudianteRepository;
+    public Long salvarEstudiante(Estudiante estudiante) throws Exception {
+        return estudianteRepository.upsert(estudiante);
     }
 
-    public CursoRepository getCursoRepository() {
-        return cursoRepository;
+    public void eliminarEstudiante(Long estudianteId) throws Exception {
+        estudianteRepository.eliminar(estudianteId);
     }
 
-    public ContenidoRepository getContenidoRepository() {
-        return contenidoRepository;
-    }
-
-    public SubcontenidoRepository getSubcontenidoRepository() {
-        return subcontenidoRepository;
-    }
-
-    public EstudianteCursoRepository getEstudianteCursoRepository() {
-        return estudianteCursoRepository;
+    public Long salvarCurso(Curso curso) throws Exception {
+        return cursoRepository.upsert(curso);
     }
 }

@@ -9,16 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EstudianteJson extends Estudiante {
+public class EstudianteBusinessObject extends Estudiante {
     private List<Curso> cursos;
     private Map<String, BigDecimal> notas;
-    public EstudianteJson(Long estudianteId, String nombre, String primerApellido, String segundoApellido, String genero, String direccion, String correoElectronico, String telefonoCasa, String telefonoCelular, Integer edad) {
+    public EstudianteBusinessObject(Long estudianteId, String nombre, String primerApellido, String segundoApellido, String genero, String direccion, String correoElectronico, String telefonoCasa, String telefonoCelular, Integer edad) {
         super(estudianteId, nombre, primerApellido, segundoApellido, genero, direccion, correoElectronico, telefonoCasa, telefonoCelular, edad);
         cursos = new ArrayList<>();
         notas = new HashMap<>();
     }
 
-    public EstudianteJson(String nombre, String primerApellido, String segundoApellido, String genero, String direccion, String correoElectronico, String telefonoCasa, String telefonoCelular, Integer edad) {
+    public EstudianteBusinessObject(String nombre, String primerApellido, String segundoApellido, String genero, String direccion, String correoElectronico, String telefonoCasa, String telefonoCelular, Integer edad) {
         super(nombre, primerApellido, segundoApellido, genero, direccion, correoElectronico, telefonoCasa, telefonoCelular, edad);
         cursos = new ArrayList<>();
         notas = new HashMap<>();
